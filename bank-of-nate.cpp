@@ -41,7 +41,7 @@ void newAcc()
   std::cin>>accNum;
   
   std::ifstream inf{ lname + accNum + ".txt"};
-  if (inf)
+  if (inf)//<uses fstream's input function to check for file names and prevent name collisions
   {
     std::cout << "\x1B[2J\x1B[H";
     std::cout<<"--ERROR - ACCOUNT IDENTIFIER ALREADY EXISTS--"<<std::endl;
@@ -75,9 +75,11 @@ void newAcc()
   {
     std::cerr<<"File could not be opened.";
   }
+  //I added some nice borders so each record entry is more readable
   outf<<" " + n;
   outf<<"+----------------------------------------------+  ";
   outf<<dt + n;
+  //this annotates the record with the current user and time
   outf<<"CREATED BY: " + user + n;
   outf<<" " + n;
   outf<<fn + fname + n;
@@ -137,7 +139,7 @@ void mAcc()
   std::cin>>aaccNum;
   
   std::ifstream inf{ llname + aaccNum + ".txt" };
-  if(!inf)
+  if(!inf)//<uses fstream's input function to verify the record exists
   {
     std::cerr<<"Error. File could not be opened.";
   }if (inf){
@@ -158,6 +160,7 @@ void mAcc()
   }
   //all write functions are in append mode, so there is a chronological record
   outf<<" " + n;
+  //same appending function headers, but a little different
   outf<<"+----------------------------------------------+  ";
   outf<<dt + n;
   outf<<" " + n;
