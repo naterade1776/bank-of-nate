@@ -9,6 +9,8 @@ This application can:
 Application also checks input for name collisions, so no two records can have the same file name. Credentials are also 
 required to create or modify an account. 
 
+Application also annotates each record entry with the time and user.
+
 --Initial Login for Original Code--
 UN: admin
 PW: 113113
