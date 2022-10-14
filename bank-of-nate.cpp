@@ -23,6 +23,8 @@ std::string an = "Account Number: ";
 std::string sc = (lname + accBal + ".txt");
 std::string notimportant;
 std::string usn;
+std::string nname;
+std::string oname;
 
 //generates new account record
 void newAcc()
@@ -43,8 +45,8 @@ void newAcc()
   std::ifstream inf{ lname + accNum + ".txt"};
   if (inf)//<uses fstream's input function to check for file names and prevent name collisions
   {
-    std::cout << "\x1B[2J\x1B[H";
-    std::cout<<"--ERROR - ACCOUNT IDENTIFIER ALREADY EXISTS--"<<std::endl;
+  std::cout << "\x1B[2J\x1B[H";
+  std::cout<<"--ERROR - ACCOUNT IDENTIFIER ALREADY EXISTS--"<<std::endl;
   }
   if (!inf){
   // gets current time and date
@@ -55,9 +57,9 @@ void newAcc()
 
 
 
-   // writes date and time to record
-   tm *gmtm = gmtime(&now);
-   dt = asctime(gmtm);
+  // writes date and time to record
+  tm *gmtm = gmtime(&now);
+  dt = asctime(gmtm);
   std::cout << "\x1B[2J\x1B[H";
   std::cout<<"--DOMAIN AVAILABLE--"<<std::endl;
   n = "\n";
@@ -73,7 +75,7 @@ void newAcc()
   std::ofstream outf{ lname + accNum + ".txt", std::ios::app };
   if (!outf)
   {
-    std::cerr<<"File could not be opened.";
+  std::cerr<<"File could not be opened.";
   }
   //I added some nice borders so each record entry is more readable
   outf<<" " + n;
@@ -88,7 +90,9 @@ void newAcc()
   outf<<ab + accBal + n;
   outf<<"+-----------------------------------------------+";
   }
-  }else{
+  }
+  else
+  {
     std::cout<<"--INVALID UID--";
   }
 }
@@ -114,23 +118,62 @@ void vAcc()
   }
 }
 
+
+void closeAcc()
+{
+  //i got tired of the "std::" stuff
+  using namespace std;
+  //admin code for admin functions
+  cout<<"Enter UID:"<<endl;
+  cin>>usn;
+  if (usn == "0000")
+  {
+  //this has to be here or the app will just write 
+  //a new record and ignore existing records
+  cout << "Enter account holder's legal last name: "<<endl;
+  cin>>lname;
+  cout << "Enter account number: "<<endl;
+  cin>>accNum;
+  std::ifstream inf{ lname + accNum + ".txt"};
+    if (inf)
+    //uses fstream's input function to check for file names 
+    //and prevent name collisions
+    {
+    oname = (lname + accNum + ".txt");
+    nname = (lname + accNum + "CLOSED.txt");
+    ofstream outf{ oname.c_str() };
+    rename(oname.c_str(), nname.c_str());
+    cout << "--ACCOUNT CLOSE SUCCESSFUL--"<<  endl;
+    }
+    if (!inf)
+    {
+    cout << "--RECORD NOT FOUND--"<<endl<<"INPUT R TO RETURN TO CONSOLE";
+    }
+  
+  }
+  if (usn != "0000")
+  {
+    cout<<"--INVALID UID - ENTER R TO RETURN TO CONSOLE--";
+  }
+
+}
 void mAcc()
 {
-  // another time and date thing
-   time_t now = time(0);
+// another time and date thing
+time_t now = time(0);
    
-   // 
-   char* dt = ctime(&now);
+ 
+char* dt = ctime(&now);
 
 
 
-   // 
-   tm *gmtm = gmtime(&now);
-   dt = asctime(gmtm);
-  int uid;
-  std::cout<<"Admin UID required: "<<std::endl;
-  std::cin>>uid;
-    if (uid == 0000)
+
+tm *gmtm = gmtime(&now);
+dt = asctime(gmtm);
+int uid;
+std::cout<<"Admin UID required: "<<std::endl;
+std::cin>>uid;
+  if (uid == 0000)
   {
   std::cout << "\x1B[2J\x1B[H";//<this clears the console
   std::cout<<"Enter last name of account holder: ";
@@ -139,40 +182,43 @@ void mAcc()
   std::cin>>aaccNum;
   
   std::ifstream inf{ llname + aaccNum + ".txt" };
-  if(!inf)//<uses fstream's input function to verify the record exists
-  {
+    if(!inf)//<uses fstream's input function to verify the record exists
+    {
     std::cerr<<"Error. File could not be opened.";
-  }if (inf){
+    }
+    if (inf)
+    {
   
     n = "\n";
-  std::cout<<"Enter acount holder's legal first name: ";
-  std::cin>>fname;
-  std::cout<<"Enter account holder's legal last name: ";
-  std::cin>>lname;
-  std::cout<<"Enter account number: ";
-  std::cin>>accNum;
-  std::cout<<"Update account balance ($): ";
-  std::cin>>accBal;
-  std::ofstream outf{ llname + aaccNum + ".txt", std::ios::app };
-  if (!outf)
-  {
-    std::cerr<<"File could not be opened.";
-  }
-  //all write functions are in append mode, so there is a chronological record
-  outf<<" " + n;
+    std::cout<<"Enter acount holder's legal first name: ";
+    std::cin>>fname;
+    std::cout<<"Enter account holder's legal last name: ";
+    std::cin>>lname;
+    std::cout<<"Enter account number: ";
+    std::cin>>accNum;
+    std::cout<<"Update account balance ($): ";
+    std::cin>>accBal;
+    std::ofstream outf{ llname + aaccNum + ".txt", std::ios::app };
+      if (!outf)
+      {
+      std::cerr<<"File could not be opened.";
+      }
+      //all write functions are in append mode, so there is a chronological record
+    outf<<" " + n;
   //same appending function headers, but a little different
-  outf<<"+----------------------------------------------+  ";
-  outf<<dt + n;
-  outf<<" " + n;
-  outf<<"MODIFIED BY: " + user<< std::endl;
-  outf<<" " + n;
-  outf<<fn + fname + n;
-  outf<<ln + lname + n;
-  outf<<an + accNum + n;
-  outf<<ab + accBal + n;
-  outf<<"+----------------------------------------------+";
+    outf<<"+----------------------------------------------+  ";
+    outf<<dt + n;
+    outf<<" " + n;
+    outf<<"MODIFIED BY: " + user<< std::endl;
+    outf<<" " + n;
+    outf<<fn + fname + n;
+    outf<<ln + lname + n;
+    outf<<an + accNum + n;
+    outf<<ab + accBal + n;
+    outf<<"+----------------------------------------------+";
+    }
   }
-  }if (uid != 0000)
+  if (uid != 0000)
   {
     std::cout<<"Invalid UID";
   }
@@ -182,54 +228,58 @@ void mAcc()
 
 int main()
 {
-  //primary login, since this is an admin console
-  std::cout<<"ENTER UID: "<< std::endl;
-  std::cin>>login;
-  std::cout<<"ENTER USERNAME: "<<std::endl;
-  std::cin>>user;
-  while (login == "113113" && user == "admin")
-  //a cool banner for the menu
-  {
-    std::cout << "\x1B[2J\x1B[H";
-    std::cout <<"▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄" <<        std::endl;
-    std::cout <<"██ ▄▄▀█ ▄▄▀██ ▀██ ██ █▀▄████ ▄▄▄ ██ ▄▄▄████ ▀██ █ ▄▄▀█▄▄ ▄▄██ ▄▄▄"<<         std::endl;
-    std::cout <<"██ ▄▄▀█ ▀▀ ██ █ █ ██ ▄▀█████ ███ ██ ▄▄█████ █ █ █ ▀▀ ███ ████ ▄▄▄"<<         std::endl;
-    std::cout <<"██ ▀▀ █ ██ ██ ██▄ ██ ██ ████ ▀▀▀ ██ ███████ ██▄ █ ██ ███ ████ ▀▀▀"<<         std::endl;
-    std::cout <<"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"<<         std::endl;
-    std::cout <<"--BANK OF NATE ADMIN CONSOLE - PLEASE SELECT FUNCTION--"  << std::endl;
-    std::cout<<"+------------------------------------------------------------+"               <<std::endl;
-    std::cout<<"|                 +++Management Console++                    |"              <<std::endl;
-    std::cout<<"|  1. New Account                                            |"              <<std::endl;
-    std::cout<<"|  2. View Record                                            |"              <<std::endl;
-    std::cout<<"|  3. Modify Account                                         |"              <<std::endl;
-    std::cout<<"|                                                            |"              <<std::endl;
-    std::cout<<"+------------------------------------------------------------+"              <<std::endl;
-    std::cout<<"Enter command: ";
-    std::cin>>comm;
+//primary login, since this is an admin console
+std::cout<<"ENTER UID: "<< std::endl;
+std::cin>>login;
+std::cout<<"ENTER USERNAME: "<<std::endl;
+std::cin>>user;
+while (login == "113113" && user == "admin")
+//a cool banner for the menu
+{
+std::cout << "\x1B[2J\x1B[H";
+std::cout <<"▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄" <<        std::endl;
+std::cout <<"██ ▄▄▀█ ▄▄▀██ ▀██ ██ █▀▄████ ▄▄▄ ██ ▄▄▄████ ▀██ █ ▄▄▀█▄▄ ▄▄██ ▄▄▄"<<         std::endl;
+std::cout <<"██ ▄▄▀█ ▀▀ ██ █ █ ██ ▄▀█████ ███ ██ ▄▄█████ █ █ █ ▀▀ ███ ████ ▄▄▄"<<         std::endl;
+std::cout <<"██ ▀▀ █ ██ ██ ██▄ ██ ██ ████ ▀▀▀ ██ ███████ ██▄ █ ██ ███ ████ ▀▀▀"<<         std::endl;
+std::cout <<"▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀"<<         std::endl;
+std::cout <<"--BANK OF NATE ADMIN CONSOLE - PLEASE SELECT FUNCTION--"  << std::endl;
+std::cout<<"+------------------------------------------------------------+"               <<std::endl;
+std::cout<<"|                 +++Management Console++                    |"              <<std::endl;
+std::cout<<"|  1. New Account                                            |"              <<std::endl;
+std::cout<<"|  2. View Record                                            |"              <<std::endl;
+std::cout<<"|  3. Modify Account                                         |"              <<std::endl;
+std::cout<<"|  4. Close Account                                          |"              <<std::endl;
+std::cout<<"+------------------------------------------------------------+"              <<std::endl;
+std::cout<<"Enter command: ";
+std::cin>>comm;
     
-    if (comm == 1)
-      {
-        newAcc();
-      }
-    if (comm == 2)
-      {
-        vAcc();
-      }
-    if (comm == 3)
-      {
-        mAcc();
-      }
+  if (comm == 1)
+  {
+  newAcc();
+  }
+  if (comm == 2)
+  {
+  vAcc();
+  }
+  if (comm == 3)
+  {
+  mAcc();
+  }
+  if (comm == 4)
+  {
+  closeAcc();
+  }
   
-    std::cout<<"INPUT 'R' FOR MAIN MENU"<<std::endl;
-    std::cin>>notimportant;
-    if (notimportant == "r")
-    {
-    user = "admin";
-    std::cout << "\x1B[2J\x1B[H";
-    }
-    if (login != "113113")
-    {
-    std::cout<<"INVALID UID";
+std::cout<<"INPUT 'R' FOR MAIN MENU"<<std::endl;
+std::cin>>notimportant;
+  if (notimportant == "r")
+  {
+  user = "admin";
+  std::cout << "\x1B[2J\x1B[H";
+  }
+if (login != "113113")
+{
+std::cout<<"INVALID UID";
     }
   }
 }
