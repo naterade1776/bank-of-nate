@@ -1,5 +1,7 @@
 # bank-of-nate
-A simple terminal application for bank management. Create, view, and add bank records.
+A simple and poorly designed terminal application for bank management. Create, view, and add bank records.
+
+NOTE: This is more intended to demonstrate simple I/O and file handling. A proper application would use hashes, databases, and not have hard-coded credentials.
 
 This application can:
 -Create Records
